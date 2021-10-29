@@ -1,5 +1,6 @@
 // const axios = require('axios')
 // const url = 'http://checkip.amazonaws.com/';
+const { PinpointClient, SendMessagesCommand } = require("@aws-sdk/client-pinpoint");
 let response;
 
 /**
@@ -18,13 +19,35 @@ exports.receiveSMS = async (event, context) => {
     try {
         const messageString = event['Records'][0]['Sns']['Message'];
         const message = JSON.parse(messageString);
+        const originationNumber = message['originationNumber'];
+        const responseMessage = "RESP: " + message['messageBody']
+
+        const pinpointClient = new PinpointClient({ region: "us-east-1"});
+        const params = {
+            ApplicationId: '91d70cfa0fb946a3b0ca034a3f89149e',
+            MessageRequest: {
+                Addresses: {
+                    [originationNumber]: {
+                        ChannelType: 'SMS'
+                    }
+                },
+                MessageConfiguration: {
+                    SMSMessage: {
+                        Body: responseMessage,
+                        MessageType: 'TRANSACTIONAL'
+                    }
+                }
+            }
+        };
+
+        const command = new SendMessagesCommand(params);
+        const result = await pinpointClient.send(command);
 
         // const ret = await axios(url);
         response = {
             'statusCode': 200,
             'body': JSON.stringify({
-                body: message['messageBody'],
-                sender: message['originationNumber']
+                result: result
             })
         }
     } catch (err) {

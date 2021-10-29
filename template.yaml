@@ -23,8 +23,7 @@ Resources:
         SNS1:
           Type: SNS
           Properties:
-            Topic:
-              Ref: SNSTopic1
+            Topic: arn:aws:sns:us-east-1:501159871365:SMSBotTest
 
   HelloWorldFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction

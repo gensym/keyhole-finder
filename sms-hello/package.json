@@ -7,11 +7,12 @@
   "scripts": {
     "test": "mocha tests/unit"
   },
-    "devDependencies": {
+  "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^8.2.1"
   },
   "dependencies": {
+    "@aws-sdk/client-pinpoint": "^3.39.0",
     "aws-sdk": "^2.1017.0"
   }
 }
