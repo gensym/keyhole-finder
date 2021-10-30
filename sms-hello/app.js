@@ -3,6 +3,7 @@
 const { PinpointClient, SendMessagesCommand } = require("@aws-sdk/client-pinpoint");
 let response;
 
+
 /**
  *
  * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
@@ -20,7 +21,6 @@ exports.receiveSMS = async (event, context) => {
         const messageString = event['Records'][0]['Sns']['Message'];
         const message = JSON.parse(messageString);
         const originationNumber = message['originationNumber'];
-        const responseMessage = "RESP: " + message['messageBody']
 
         const pinpointClient = new PinpointClient({ region: "us-east-1"});
         const params = {
@@ -40,8 +40,8 @@ exports.receiveSMS = async (event, context) => {
             }
         };
 
-        const command = new SendMessagesCommand(params);
-        const result = await pinpointClient.send(command);
+        const sendCommand = new SendMessagesCommand(params);
+        const result = await pinpointClient.send(sendCommand);
 
         // const ret = await axios(url);
         response = {
