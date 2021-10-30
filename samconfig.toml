@@ -2,9 +2,9 @@ version = 0.1
 [default]
 [default.deploy]
 [default.deploy.parameters]
-stack_name = "sam-app"
+stack_name = "keyhole-finder"
 s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-eb2aj7pl8t2x"
-s3_prefix = "sam-app"
+s3_prefix = "keyhole-finder"
 region = "us-east-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
