@@ -14,6 +14,7 @@ Resources:
   SubscriptionsTable:
     Type: AWS::DynamoDB::Table
     Properties:
+      TableName: KeyholeSubscriptions
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: date
@@ -25,6 +26,14 @@ Resources:
           KeyType: HASH
         - AttributeName: subscriber
           KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: subscriber-index
+          KeySchema:
+            - AttributeName: subscriber
+              KeyType: HASH
+          Projection:
+            ProjectionType: KEYS_ONLY
+
   HelloSmsFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
