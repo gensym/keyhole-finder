@@ -3,8 +3,6 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   keyhole-finder
 
-  Sample SAM Template for keyhole-finder
-  
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
@@ -66,20 +64,6 @@ Resources:
     Properties:
       DisplayName: KeyholeFinder
       TopicName: KeyholeFinderInbound
-
-  HelloSmsFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-    Properties:
-      CodeUri: sms-hello/
-      Handler: app.receiveSMS
-      Runtime: nodejs14.x
-      Architectures:
-        - x86_64
-      Events:
-        SNS1:
-          Type: SNS
-          Properties:
-            Topic: arn:aws:sns:us-east-1:501159871365:SMSBotTest
 
   ReceiveSMSFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
