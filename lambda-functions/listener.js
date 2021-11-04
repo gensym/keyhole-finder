@@ -1,4 +1,4 @@
-const {DynamoDBClient, ListTablesCommand, PutItemCommand, DeleteItemCommand, QueryCommand} = require("@aws-sdk/client-dynamodb");
+const {DynamoDBClient, PutItemCommand, DeleteItemCommand } = require("@aws-sdk/client-dynamodb");
 const { PinpointClient, SendMessagesCommand } = require("@aws-sdk/client-pinpoint");
 
 function addSubscriptionCommand(subscriber, date) {
