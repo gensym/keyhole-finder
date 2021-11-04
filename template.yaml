@@ -34,10 +34,12 @@ Resources:
           Projection:
             ProjectionType: KEYS_ONLY
 
-  SubscriptionsTableRole:
+  LambdaFunctionRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: subscriptions-table-accessor
+      RoleName: sms-listener-lambda-function-role
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       AssumeRolePolicyDocument:
         Statement:
           - Effect: Allow
@@ -46,20 +48,18 @@ Resources:
                 - lambda.amazonaws.com
             Action:
               - 'sts:AssumeRole'
-
-  SubscriptionsTablePolicy:
-    Type: AWS::IAM::Policy
-    Properties:
-      PolicyName: subscriptions-table-access
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Action:
-              - dynamodb:*
-            Resource: !GetAtt SubscriptionsTable.Arn
-      Roles:
-        - Ref: SubscriptionsTableRole
+      Policies:
+        - PolicyName: subscriptions-table-access
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:*
+                Resource: !GetAtt SubscriptionsTable.Arn
+              - Effect: Allow
+                Action: mobiletargeting:SendMessages
+                Resource: "arn:aws:mobiletargeting:us-east-1:501159871365:apps/91d70cfa0fb946a3b0ca034a3f89149e/messages"
 
   SMSReceiptTopic:
     Type: AWS::SNS::Topic
@@ -89,6 +89,9 @@ Resources:
       Runtime: nodejs14.x
       Architectures:
         - x86_64
+      Role: !GetAtt
+        - LambdaFunctionRole
+        - Arn
       Events:
         SNS1:
           Type: SNS

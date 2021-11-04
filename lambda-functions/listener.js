@@ -27,7 +27,7 @@ async function sendMessage(destination, message) {
     };
 
     const sendCommand = new SendMessagesCommand(params);
-    const result = await pinpointClient.send(sendCommand);
+    return await pinpointClient.send(sendCommand);
 }
 
 const watchCommand = {
@@ -59,13 +59,13 @@ exports.listen = async (event, context) => {
                 const cmd = watchCommand;
                 if (cmd.validate(args)) {
                     let result = await cmd.execute(originationNumber, args);
-                    sendMessage(originationNumber, result);
+                    await sendMessage(originationNumber, result);
                 } else {
-                    sendMessage(originationNumber, cmd.commandSyntax());
+                    await sendMessage(originationNumber, cmd.commandSyntax());
                 }
                 break;
             default:
-                sendMessage(originationNumber, helpMessage);
+                await sendMessage(originationNumber, helpMessage);
                 break;
         }
     } catch(err) {
