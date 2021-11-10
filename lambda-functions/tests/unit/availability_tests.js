@@ -2,6 +2,20 @@ const assert = require('chai').assert;
 const availability = require('../../availability');
 
 describe('availability', () => {
+
+    describe("addDays", () => {
+        it("Should rollover to the next month", () => {
+           const dateString = "2022-01-20";
+           assert.equal("2022-02-01", availability.addDays(dateString, 12));
+        });
+
+        it("Should rollover to the next year", () => {
+            const dateString = "2022-11-20";
+            assert.equal("2023-01-20", availability.addDays(dateString, 61));
+        });
+
+    });
+
    describe('matchAvailability', () => {
        it("should find available dates", () => {
            const subscriptions = [

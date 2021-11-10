@@ -1,4 +1,12 @@
-exports.matchAvailability = function(subscriptions, calendar) {
+
+exports.addDays = function (dateString, toAdd) {
+    const startDate = new Date(dateString);
+    startDate.setUTCDate(startDate.getUTCDate() + toAdd);
+    return startDate.toISOString().substring(0, 10);
+}
+
+
+exports.matchAvailability = function (subscriptions, calendar) {
     const subscribers = subscriptions.reduce((m, subscription) => {
         (m[subscription.subscriber] ||= []).push(subscription.date);
         return m;
