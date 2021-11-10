@@ -65,6 +65,24 @@ Resources:
       DisplayName: KeyholeFinder
       TopicName: KeyholeFinderInbound
 
+  CheckAvailabilityFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambda-functions/
+      Handler: check.check
+      Runtime: nodejs14.x
+      Architectures:
+        - x86_64
+      Role: !GetAtt
+        - LambdaFunctionRole
+        - Arn
+      Events:
+        SNS1:
+          Type: SNS
+          Properties:
+            Topic:
+              Ref: SMSReceiptTopic
+
   ReceiveSMSFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
