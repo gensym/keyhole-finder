@@ -1,10 +1,13 @@
 
-exports.addDays = function (dateString, toAdd) {
-    const startDate = new Date(dateString);
-    startDate.setUTCDate(startDate.getUTCDate() + toAdd);
-    return startDate.toISOString().substring(0, 10);
+exports.dateRange = function(startDate, length) {
+    const endDate = new Date(startDate.getTime());
+    endDate.setDate(endDate.getDate() + length);
+    return [startDate, endDate].map((date) => {
+        const zonedString = date.toLocaleDateString({timezone: 'America/Los_Angeles'});
+        const [month, day, year] = zonedString.split('/');
+        return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    });
 }
-
 
 exports.matchAvailability = function (subscriptions, calendar) {
     const subscribers = subscriptions.reduce((m, subscription) => {

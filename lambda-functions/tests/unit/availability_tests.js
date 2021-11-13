@@ -3,17 +3,21 @@ const availability = require('../../availability');
 
 describe('availability', () => {
 
-    describe("addDays", () => {
+    describe("dateRange", () => {
         it("Should rollover to the next month", () => {
-           const dateString = "2022-01-20";
-           assert.equal("2022-02-01", availability.addDays(dateString, 12));
+           const date = new Date(Date.parse('20 Jan 2022 12:00:00 GMT'));
+           assert.deepEqual(availability.dateRange(date, 12), ['2022-01-20', '2022-02-01']);
         });
 
         it("Should rollover to the next year", () => {
-            const dateString = "2022-11-20";
-            assert.equal("2023-01-20", availability.addDays(dateString, 61));
+            const date = new Date(Date.parse('20 Nov 2022 12:00:00 GMT'));
+            assert.deepEqual(availability.dateRange(date, 90), ['2022-11-20', '2023-02-18']);
         });
 
+        it("Should be in california time", () => {
+            const date = new Date(Date.parse('21 Jan 2022 7:00:00 GMT'));
+            assert.deepEqual(availability.dateRange(date, 12), ['2022-01-20', '2022-02-01']);
+        });
     });
 
    describe('matchAvailability', () => {
