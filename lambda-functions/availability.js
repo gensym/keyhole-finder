@@ -43,8 +43,9 @@ exports.matchAvailability = (subscriptions, calendar) => {
 }
 
 const onMatch = (subscriber, date, type) => {
-    sendMessage(subscriber, `Found availability on ${date} (${type})`);
-    removeSubscription(subscriber, date);
+    return Promise.all([
+        sendMessage(subscriber, `Found availability on ${date} (${type})`),
+        removeSubscription(subscriber, date)]);
 }
 
 exports.checkAvailability = async (event, context) => {
@@ -52,10 +53,11 @@ exports.checkAvailability = async (event, context) => {
     const calendar = await getAvailabilityCalendar(startDate, endDate);
     const subscriptions = await getSubscriptions(startDate, endDate);
     const matches = module.exports.matchAvailability(subscriptions, calendar);
-    matches.forEach((match) => {
-        Object.keys(match.dates).forEach((date) => {
+    const results = await Promise.all(Array.from(matches).map((match) => {
+        return Promise.all(Object.keys(match.dates).map((date) => {
             const type = match.dates[date];
-            onMatch(match.subscriber, date, type);
-        });
-    });
+            return onMatch(match.subscriber, date, type);
+        }));
+    }));
+    return results;
 };
