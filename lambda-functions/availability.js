@@ -1,5 +1,8 @@
+const {getAvailabilityCalendar} = require('./availability_client');
+const {getSubscriptions, removeSubscription} = require('./subscriptions');
+const {sendMessage} = require('./messenger');
 
-exports.dateRange = function(startDate, length) {
+exports.dateRange = (startDate, length) => {
     const endDate = new Date(startDate.getTime());
     endDate.setDate(endDate.getDate() + length);
     return [startDate, endDate].map((date) => {
@@ -9,9 +12,12 @@ exports.dateRange = function(startDate, length) {
     });
 }
 
-exports.matchAvailability = function (subscriptions, calendar) {
+exports.matchAvailability = (subscriptions, calendar) => {
     const subscribers = subscriptions.reduce((m, subscription) => {
-        (m[subscription.subscriber] ||= []).push(subscription.date);
+        if (!m[subscription.subscriber]) {
+            m[subscription.subscriber] = [];
+        }
+        m[subscription.subscriber].push(subscription.date);
         return m;
     }, {});
 
@@ -35,3 +41,21 @@ exports.matchAvailability = function (subscriptions, calendar) {
         };
     }));
 }
+
+const onMatch = (subscriber, date, type) => {
+    sendMessage(subscriber, `Found availability on ${date} (${type})`);
+    removeSubscription(subscriber, date);
+}
+
+exports.checkAvailability = async (event, context) => {
+    let [startDate, endDate] = module.exports.dateRange(new Date(), 90);
+    const calendar = await getAvailabilityCalendar(startDate, endDate);
+    const subscriptions = await getSubscriptions(startDate, endDate);
+    const matches = module.exports.matchAvailability(subscriptions, calendar);
+    matches.forEach((match) => {
+        Object.keys(match.dates).forEach((date) => {
+            const type = match.dates[date];
+            onMatch(match.subscriber, date, type);
+        });
+    });
+};
