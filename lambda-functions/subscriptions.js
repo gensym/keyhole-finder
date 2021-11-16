@@ -1,6 +1,5 @@
 const {DynamoDBClient, PutItemCommand, DeleteItemCommand, ScanCommand} = require("@aws-sdk/client-dynamodb");
 const {sendMessage} = require('./messenger');
-const {removeSubscription} = require("./subscriptions");
 
 function getSubscriptionsCommand(startDate, endDate) {
     return new ScanCommand({
